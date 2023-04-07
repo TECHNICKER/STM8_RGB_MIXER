@@ -1,99 +1,101 @@
 #include "stm8s.h"
-#include "delay.h"
-#include "LCD_I2C.h"
-#include "LCD_I2C_UI.h"
-#include "Serial.h"
-#include "encoder.h"
+// #include "encoder.h"
 #include "milis.h"
 
-#define len(arr) sizeof(arr) / sizeof(arr[0])
-#define LED_PORT GPIOD
-#define LED_PIN GPIO_PIN_4
+#define RGB_PORT GPIOD
+#define RED_PIN   GPIO_PIN_4
+#define GRN_PIN   GPIO_PIN_5
+#define BLU_PIN   GPIO_PIN_6
+#define CTRL_PORT GPIOA
+#define MINUS   GPIO_PIN_1
+#define CHANGE  GPIO_PIN_2
+#define PLUS    GPIO_PIN_3
+#define FLIP    GPIO_WriteReverse
+#define OFF     GPIO_WriteLow
+#define ON      GPIO_WriteHigh
+#define micros_init milis_init
+#define micros  milis
 
-void handleLeft();
-void handleRight();
-void handleClick();
+void counter_reset(void);
 
-uint32_t time = 0;
-bool display_backlight = TRUE;
-Encoder_Config ENCODER_CONFIG = {
-    .clk = GPIO_PIN_5,
-    .ds = GPIO_PIN_4,
-    .btn = GPIO_PIN_3,
-    .onLeft = &handleLeft,
-    .onRight = &handleRight,
-    .onClick = &handleClick,
-};
-LCD_I2C_UI_Page LCD_UI_PAGES[] = {
-    {
-        .name = "HOME",
-        .content = {
-            {
-                .text = "home",
-            },
-        },
-    },
-    {
-        .name = "ABOUT",
-        .content = {
-            {
-                .text = "about",
-            },
-        },
-    },
-};
+uint32_t master_time = 0;
+uint8_t  master_period = 1; 
+uint8_t  counter[4] = {0, 0, 0, 0};                     // master, R, G, B
+uint8_t  counter_reference[4] = {0, 100, 10, 5};      // master, R, G, B
 
-void handleLeft()
+void counter_reset(void)
 {
-    if (!display_backlight)
-    {
-        display_backlight = TRUE;
-        LCD_I2C_Backlight();
-        time = milis();
-    }
+    counter[0] = counter_reference[0];
+    counter[1] = counter_reference[1];
+    counter[2] = counter_reference[2];
+    counter[3] = counter_reference[3];
 }
 
-void handleRight()
-{
-    if (!display_backlight)
-    {
-        display_backlight = TRUE;
-        LCD_I2C_Backlight();
-        time = milis();
-    }
-}
-
-void handleClick()
-{
-    if (!display_backlight)
-    {
-        display_backlight = TRUE;
-        LCD_I2C_Backlight();
-        time = milis();
-    }
-    LCD_I2C_UI_Redirect("ABOUT");
-}
 
 int main(void)
 {
 
     CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
-    GPIO_Init(LED_PORT, LED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    Serial_Begin(9600);
-    LCD_I2C_Init(0x26, 16, 2);
-    LCD_I2C_UI_Init(LCD_UI_PAGES);
-    Encoder_Init(&ENCODER_CONFIG);
-    milis_init();
+    // Encoder_Init(&ENCODER_CONFIG);
+    GPIO_Init(RGB_PORT, RED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(RGB_PORT, GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(RGB_PORT, BLU_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(CTRL_PORT, MINUS,  GPIO_MODE_IN_PU_IT);
+    GPIO_Init(CTRL_PORT, CHANGE, GPIO_MODE_IN_PU_IT);
+    GPIO_Init(CTRL_PORT, PLUS,   GPIO_MODE_IN_PU_IT);
+
+    micros_init();
+    counter_reset();
 
     while (1)
     {
-        LCD_I2C_UI_Render();
 
-        if (milis() - time > 15000 && display_backlight)
+        if (micros() - master_time >= master_period)
         {
-            display_backlight = FALSE;
-            LCD_I2C_NoBacklight();
-            time = milis();
+
+           if (counter[1] > 0)
+           {
+                ON(RGB_PORT, RED_PIN);
+                counter[1] -= 1;
+
+           } else {
+                if (counter[1] == 0)
+                {
+                    OFF(RGB_PORT, RED_PIN);
+                }
+           }
+
+           if (counter[2] > 0)
+           {
+                ON(RGB_PORT, GRN_PIN);
+                counter[2] -= 1;
+
+           } else {
+                if (counter[2] == 0)
+                {
+                    OFF(RGB_PORT, GRN_PIN);
+                }
+           }
+
+           if (counter[3] > 0)
+           {
+                ON(RGB_PORT, BLU_PIN);
+                counter[3] -= 1;
+
+           } else {
+                if (counter[3] == 0)
+                {
+                    OFF(RGB_PORT, BLU_PIN);
+                }
+           }
+
+           
+            counter[0] += 1;
+            if (counter[0] > 100)
+            {
+                counter_reset();
+            }      
+            master_time = micros();
         }
     }
 }

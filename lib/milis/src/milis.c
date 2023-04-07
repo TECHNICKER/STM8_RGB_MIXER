@@ -32,7 +32,7 @@ INTERRUPT_HANDLER(TIM4_UPD_OVF_IRQHandler, 23)
 // init TIM4 as source for milis interrupt (low priority)
 void milis_init(void)
 {
-    TIM4_TimeBaseInit(PRESCALER, PERIOD); // (16MHz / 128) / 125 = 1000Hz
+    TIM4_TimeBaseInit(PRESCALER, PERIOD); // (16MHz / 16) / 10 = 100 kHz (10 us)
     TIM4_ClearFlag(TIM4_FLAG_UPDATE);
     TIM4_ITConfig(TIM4_IT_UPDATE, ENABLE);
     ITC_SetSoftwarePriority(ITC_IRQ_TIM4_OVF, ITC_PRIORITYLEVEL_1); // nízká priorita pøerušení

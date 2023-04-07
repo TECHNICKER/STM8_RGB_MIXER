@@ -119,8 +119,13 @@ void write_byte_address(uint32_t Address, uint8_t Data)
 
   /* use inline assembler to write to 16b/24b address */
 __asm
+#ifndef _GAS_
   ld	a,_asm_val
   ldf	[_asm_addr+1].e,a
+#else
+  ld a, _asm_val
+  ld (e, _asm_addr + 1), a
+#endif
 __endasm;
 
 }

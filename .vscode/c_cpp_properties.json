@@ -7,7 +7,7 @@
                 "C:/Program Files/SDCC/include/**",
                 "app/inc/**",
                 "lib/**",
-                "lib/encoder/inc/**",
+                "lib/encoder/inc/**"
             ],
             "defines": [
                 "STM8S103",
@@ -17,7 +17,8 @@
             "compilerPath": "C:/ProgramData/chocolatey/bin/gcc.exe",
             "cStandard": "c99",
             "cppStandard": "c++11",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4
