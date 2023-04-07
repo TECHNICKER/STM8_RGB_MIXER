@@ -1,3 +1,7 @@
+THIS IS A PROJECT BUILT UPON MATĚJ KŘENEK'S STM8 TOOLCHAIN, PLEASE KEEP THAT IN MIND.
+
+
+
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a name="readme-top"></a>
 <!--
