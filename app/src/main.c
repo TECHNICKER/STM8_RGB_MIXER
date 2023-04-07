@@ -2,26 +2,26 @@
 // #include "encoder.h"
 #include "milis.h"
 
-#define RGB_PORT GPIOD
-#define RED_PIN   GPIO_PIN_4
-#define GRN_PIN   GPIO_PIN_5
-#define BLU_PIN   GPIO_PIN_6
-#define CTRL_PORT GPIOA
-#define MINUS   GPIO_PIN_1
-#define CHANGE  GPIO_PIN_2
-#define PLUS    GPIO_PIN_3
-#define FLIP    GPIO_WriteReverse
-#define OFF     GPIO_WriteLow
-#define ON      GPIO_WriteHigh
+#define RGB_PORT    GPIOD
+#define RED_PIN     GPIO_PIN_4
+#define GRN_PIN     GPIO_PIN_5
+#define BLU_PIN     GPIO_PIN_6
+#define CTRL_PORT   GPIOA
+#define MINUS       GPIO_PIN_1
+#define CHANGE      GPIO_PIN_2
+#define PLUS        GPIO_PIN_3
+#define FLIP        GPIO_WriteReverse
+#define OFF         GPIO_WriteLow
+#define ON          GPIO_WriteHigh
 #define micros_init milis_init
-#define micros  milis
+#define micros      milis
 
 void counter_reset(void);
 
-uint32_t master_time = 0;
-uint8_t  master_period = 1; 
-uint8_t  counter[4] = {0, 0, 0, 0};                     // master, R, G, B
-uint8_t  counter_reference[4] = {0, 100, 10, 5};      // master, R, G, B
+uint32_t master_time            = 0;
+uint8_t  master_period          = 1; 
+uint8_t  counter[4]             = {0, 0, 0, 0};         // master, R, G, B
+uint8_t  counter_reference[4]   = {0, 100, 10, 5};      // master, R, G, B
 
 void counter_reset(void)
 {
@@ -37,12 +37,12 @@ int main(void)
 
     CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
     // Encoder_Init(&ENCODER_CONFIG);
-    GPIO_Init(RGB_PORT, RED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    GPIO_Init(RGB_PORT, GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    GPIO_Init(RGB_PORT, BLU_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    GPIO_Init(CTRL_PORT, MINUS,  GPIO_MODE_IN_PU_IT);
-    GPIO_Init(CTRL_PORT, CHANGE, GPIO_MODE_IN_PU_IT);
-    GPIO_Init(CTRL_PORT, PLUS,   GPIO_MODE_IN_PU_IT);
+    GPIO_Init(RGB_PORT,  RED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(RGB_PORT,  GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(RGB_PORT,  BLU_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(CTRL_PORT, MINUS,   GPIO_MODE_IN_PU_IT);
+    GPIO_Init(CTRL_PORT, CHANGE,  GPIO_MODE_IN_PU_IT);
+    GPIO_Init(CTRL_PORT, PLUS,    GPIO_MODE_IN_PU_IT);
 
     micros_init();
     counter_reset();
