@@ -21,7 +21,45 @@ void counter_reset(void);
 uint32_t master_time            = 0;
 uint8_t  master_period          = 1; 
 uint8_t  counter[4]             = {0, 0, 0, 0};         // master, R, G, B
-uint8_t  counter_reference[4]   = {0, 100, 10, 5};      // master, R, G, B
+uint8_t  counter_reference[4]   = {0, 100, 10, 10};      // master, R, G, B
+uint8_t  index                  = 0;
+
+// INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
+// {
+//     switch (GPIO_ReadInputData(CTRL_PORT))
+//     {
+
+//     case 0b010:
+//         if ((index + 1) > 2)
+//         {
+//             index = 0;
+//         } else {
+//             index += 1;
+//         }
+//         break;    
+
+//     case 0b001:
+//         if ((counter_reference[index] - 1) < 0)
+//         {
+//             counter_reference[index] = 0;
+//         } else {
+//             counter_reference[index] -= 1;
+//         }
+//         break;
+
+//     case 0b100:
+//         if ((counter_reference[index] + 1) > 100)
+//         {
+//             counter_reference[index] = 100;
+//         } else {
+//             counter_reference[index] += 1;
+//         }
+//         break;
+
+//     default:
+//         break;
+//     }
+// }
 
 void counter_reset(void)
 {
@@ -31,20 +69,20 @@ void counter_reset(void)
     counter[3] = counter_reference[3];
 }
 
-
 int main(void)
 {
 
     CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
+    enableInterrupts();
+    micros_init();
     // Encoder_Init(&ENCODER_CONFIG);
     GPIO_Init(RGB_PORT,  RED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    GPIO_Init(RGB_PORT,  GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
+    GPIO_Init(RGB_PORT,  GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);   
     GPIO_Init(RGB_PORT,  BLU_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
-    GPIO_Init(CTRL_PORT, MINUS,   GPIO_MODE_IN_PU_IT);
-    GPIO_Init(CTRL_PORT, CHANGE,  GPIO_MODE_IN_PU_IT);
-    GPIO_Init(CTRL_PORT, PLUS,    GPIO_MODE_IN_PU_IT);
+    GPIO_Init(CTRL_PORT, MINUS,   GPIO_MODE_IN_PU_NO_IT);
+    GPIO_Init(CTRL_PORT, CHANGE,  GPIO_MODE_IN_PU_NO_IT);
+    GPIO_Init(CTRL_PORT, PLUS,    GPIO_MODE_IN_PU_NO_IT);
 
-    micros_init();
     counter_reset();
 
     while (1)
@@ -96,6 +134,38 @@ int main(void)
                 counter_reset();
             }      
             master_time = micros();
+
+
+            switch (GPIO_ReadInputData(CTRL_PORT))
+            {
+                case 0b010:
+                    if ((index + 1) > 2)
+                    {
+                        index = 0;
+                    } else {
+                        index += 1;
+                    }
+                    break;    
+
+                case 0b001:
+                    if ((counter_reference[index] - 1) < 0)
+                    {
+                        counter_reference[index] = 0;
+                    } else {
+                        counter_reference[index] -= 1;
+                    }
+                    break;
+
+                case 0b100:
+                    if ((counter_reference[index] + 1) > 100)
+                    {
+                        counter_reference[index] = 100;
+                    } else {
+                        counter_reference[index] += 1;
+                    }
+                    break;
+                    
+            }
         }
     }
 }
