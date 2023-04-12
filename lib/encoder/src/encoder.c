@@ -1,7 +1,6 @@
 
 #include "encoder.h"
 #include "delay.h"
-#include "Serial.h"
 
 static Encoder_Config *encoder_config;
 

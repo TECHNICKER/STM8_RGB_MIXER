@@ -4,7 +4,7 @@
 #include "LCD_I2C.h"
 
 #define RGB_PORT    GPIOD
-#define RED_PIN     GPIO_PIN_4
+#define RED_PIN     GPIO_PIN_3
 #define GRN_PIN     GPIO_PIN_5
 #define BLU_PIN     GPIO_PIN_6
 #define CTRL_PORT   GPIOA
@@ -26,35 +26,6 @@ uint8_t  counter[4]             = {0, 0, 0, 0};         // master, R, G, B
 int8_t   counter_reference[4]   = {0, 0, 0, 0};      // master, R, G, B
 uint8_t  index                  = 1;
 
-// INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
-// {
-//     if (GPIO_ReadInputPin(CTRL_PORT, CHANGE) == RESET)
-//     {
-//         index += 1;
-//         if (index > 3)
-//         {
-//             index = 1;
-//         }
-//     }
-
-//     if (GPIO_ReadInputPin(CTRL_PORT, PLUS) == RESET)
-//     {
-//         counter_reference[index] += 1;
-//         if (counter_reference[index] >= 100)
-//         {
-//             counter_reference[index] = 100;
-//         }
-//     }
-
-//     if (GPIO_ReadInputPin(CTRL_PORT, MINUS) == RESET)
-//     {
-//         counter_reference[index] -= 1;
-//         if (counter_reference[index] <= 0)
-//         {
-//             counter_reference[index] = 0;
-//         }
-//     }
-// }
 
 void colour_control(void)
 {
@@ -101,6 +72,8 @@ int main(void)
 {
 
     CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
+    LCD_I2C_Init(0x27, 16, 2);
+    
     enableInterrupts();
     micros_init();
     // Encoder_Init(&ENCODER_CONFIG);
