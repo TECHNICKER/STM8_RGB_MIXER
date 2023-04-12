@@ -23,7 +23,7 @@ void counter_reset(void);
 uint32_t master_time            = 0;
 uint8_t  master_period          = 1; 
 uint8_t  counter[4]             = {0, 0, 0, 0};         // master, R, G, B
-int8_t   counter_reference[4]   = {0, 0, 0, 0};      // master, R, G, B
+int8_t   counter_reference[4]   = {0, 50, 50, 50};      // master, R, G, B
 uint8_t  index                  = 1;
 
 // INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
@@ -103,7 +103,14 @@ int main(void)
     CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
     enableInterrupts();
     micros_init();
+
+    LCD_I2C_Init(0x27, 16, 2);
     // Encoder_Init(&ENCODER_CONFIG);
+    // LCD_I2C_Display();
+    // LCD_I2C_SetCursor(0, 1);
+    LCD_I2C_Clear();
+    LCD_I2C_Print("Hello World");
+    // LCD_I2C_NoBacklight();
     GPIO_Init(RGB_PORT,  RED_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
     GPIO_Init(RGB_PORT,  GRN_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);   
     GPIO_Init(RGB_PORT,  BLU_PIN, GPIO_MODE_OUT_PP_LOW_SLOW);
@@ -115,6 +122,8 @@ int main(void)
 
     while (1)
     {
+
+        LCD_I2C_Print("Hello World");
 
         if (micros() - master_time >= master_period)
         {

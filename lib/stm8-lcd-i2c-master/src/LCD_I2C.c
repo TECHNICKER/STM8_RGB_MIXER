@@ -18,9 +18,6 @@ void LCD_I2C_Init(uint8_t address, uint8_t cols, uint8_t rows)
     _lcd_i2c_backlight = LCD_I2C_BACKLIGHT;
     _lcd_i2c_displayfunction = LCD_I2C_4BITMODE | LCD_I2C_2LINE | LCD_I2C_5x8DOTS;
 
-    GPIO_Init(GPIOC, GPIO_PIN_5, GPIO_MODE_OUT_PP_HIGH_FAST);
-    GPIO_Init(GPIOC, GPIO_PIN_4, GPIO_MODE_OUT_PP_HIGH_FAST);
-
     I2C_DeInit();
     I2C_Init(100000, _lcd_i2c_address, I2C_DUTYCYCLE_2, I2C_ACK_CURR, I2C_ADDMODE_7BIT, CLK_GetClockFreq() / 1000000);
     I2C_Cmd(ENABLE);
