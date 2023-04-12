@@ -77,10 +77,10 @@ void LCD_I2C_Write4Bits(uint8_t data)
 void LCD_I2C_PulseEnable(uint8_t data)
 {
     LCD_I2C_ExpanderWrite(data | LCD_I2C_En);
-    delay_us(1);
+    // delay_us(1);
 
     LCD_I2C_ExpanderWrite(data & ~LCD_I2C_En);
-    delay_us(50);
+    // delay_us(50);
 }
 
 void LCD_I2C_Command(uint8_t data)
@@ -105,7 +105,7 @@ void LCD_I2C_Display()
 void LCD_I2C_Clear()
 {
     LCD_I2C_Command(LCD_I2C_CLEARDISPLAY);
-    delay_us(2000);
+    delay_us(1000);
 }
 
 void LCD_I2C_Home()
