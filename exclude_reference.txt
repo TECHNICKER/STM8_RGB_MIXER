@@ -41,3 +41,6 @@
 -x _TIM4_Cmd
 -x _TIM4_UPD_OVF_IRQHandler
 -x _LCD_I2C_Print
+-x _ENC_clr_change
+-x _ENC_clr_minus
+-x _ENC_clr_plus

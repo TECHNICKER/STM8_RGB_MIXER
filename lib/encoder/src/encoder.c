@@ -27,7 +27,7 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
 
     encoder_config->prev_state = encoder_config->curr_state;
 
-    delay_ms(1);
+    // delay_ms(1);
 }
 
 void Encoder_Init(Encoder_Config *config)

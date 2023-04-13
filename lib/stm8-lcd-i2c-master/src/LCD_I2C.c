@@ -111,7 +111,7 @@ void LCD_I2C_Clear()
 void LCD_I2C_Home()
 {
     LCD_I2C_Command(LCD_I2C_RETURNHOME);
-    delay_us(2000);
+    delay_us(1000);
 }
 
 void LCD_I2C_NoBacklight()
